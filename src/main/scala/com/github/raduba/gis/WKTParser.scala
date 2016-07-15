@@ -6,10 +6,10 @@ trait Geometry
 
 case class Point2D(x: Double, y: Double) extends Geometry
 case class Line(points: List[Point2D]) extends Geometry
-case class Polygon(lineStrings: List[Line]) extends Geometry
+case class Polygon(lines: List[Line]) extends Geometry
 
 case class MultiPoint(points: List[Point2D]) extends Geometry
-case class MultiLineString(lines: List[Line]) extends Geometry
+case class MultiLine(lines: List[Line]) extends Geometry
 case class MultiPolygon(polygons: List[Polygon]) extends Geometry
 
 object WKTParser extends JavaTokenParsers {
@@ -35,8 +35,8 @@ object WKTParser extends JavaTokenParsers {
     "MULTIPOINT" ~> "(" ~> rep1sep("(" ~> pointTuple <~ ")", ",") <~ ")" ^^ { MultiPoint } |
     "MULTIPOINT" ~ "EMPTY" ^^ {_ => MultiPoint(Nil) }
 
-  def multiLineString: Parser[MultiLineString] = "MULTILINESTRING" ~> "(" ~> multiLine <~ ")" ^^ { MultiLineString } |
-    "MULTILINESTRING" ~ "EMPTY" ^^ {_ => MultiLineString(Nil) }
+  def multiLineString: Parser[MultiLine] = "MULTILINESTRING" ~> "(" ~> multiLine <~ ")" ^^ { MultiLine } |
+    "MULTILINESTRING" ~ "EMPTY" ^^ {_ => MultiLine(Nil) }
 
   def multiPolygon: Parser[MultiPolygon] = "MULTIPOLYGON" ~> "(" ~> rep1sep(polyLine, ",") <~ ")" ^^ { MultiPolygon} |
     "MULTIPOLYGON" ~ "EMPTY" ^^ {_ => MultiPolygon(Nil) }

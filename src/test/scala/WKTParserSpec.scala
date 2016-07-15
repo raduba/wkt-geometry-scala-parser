@@ -70,7 +70,7 @@ class WKTParserSpec extends FunSpec with Matchers {
   describe("WKTParser should parse multilinestring definition") {
     it("should parse valid multilinestring definitions") {
       val mls = gparse("MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))", WKTParser.multiLineString)
-      mls should equal(Some(MultiLineString(List(Line(List(Point2D(10.0,10.0), Point2D(20.0,20.0), Point2D(10.0,40.0))), Line(List(Point2D(40.0,40.0), Point2D(30.0,30.0), Point2D(40.0,20.0), Point2D(30.0,10.0)))))))
+      mls should equal(Some(MultiLine(List(Line(List(Point2D(10.0,10.0), Point2D(20.0,20.0), Point2D(10.0,40.0))), Line(List(Point2D(40.0,40.0), Point2D(30.0,30.0), Point2D(40.0,20.0), Point2D(30.0,10.0)))))))
     }
   }
 
