@@ -4,7 +4,7 @@ import language.implicitConversions
 import play.api.libs.json.{Json, Writes}
 
 trait GeoJson
-case class Feature(geometry: Geometry, properties: Map[String, String]) extends GeoJson
+case class Feature(geometry: Geometry, properties: Map[String, String] = Map.empty) extends GeoJson
 case class FeatureCollection(features: List[Feature]) extends GeoJson
 
 object GeoJson {
@@ -26,6 +26,10 @@ object GeoJson {
   implicit def multiPolygonToList(multiPolygon: MultiPolygon): List[List[List[List[Double]]]] = multiPolygon.polygons.map(polygonToList(_))
 
   implicit def featureCollectionToList(featureCollection: FeatureCollection): List[Feature] = featureCollection.features
+
+  implicit class GeometryToFeature(geometry: Geometry) {
+    def toFeature: Feature = Feature(geometry)
+  }
 
   implicit val pointWrites: Writes[Point2D] = writeJson("Point", pointToList)
 
@@ -59,4 +63,12 @@ object GeoJson {
   }
 
   implicit val featureCollectionWrites: Writes[FeatureCollection] = writeJson("FeatureCollection", featureCollectionToList, "features")
+
+  implicit class FeatureToJson(feature: Feature) {
+    def toJson: String = Json.toJson(feature).toString()
+  }
+
+  implicit class FeatureCollectionToJson(featureCollection: FeatureCollection) {
+    def toJson: String = Json.toJson(featureCollection).toString()
+  }
 }
