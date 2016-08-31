@@ -13,19 +13,19 @@ object GeoJson {
     def writes(geometry: A) = Json.obj("type" -> name, attribute -> f(geometry))
   }
 
-  implicit def pointToList(point: Point2D): List[Double] = List(point.x, point.y)
+  def pointToList(point: Point2D): List[Double] = List(point.x, point.y)
 
-  implicit def lineToList(line: Line): List[List[Double]] = line.points.map(pointToList(_))
+  def lineToList(line: Line): List[List[Double]] = line.points.map(pointToList)
 
-  implicit def polygonToList(polygon: Polygon): List[List[List[Double]]] = polygon.lines.map(lineToList(_))
+  def polygonToList(polygon: Polygon): List[List[List[Double]]] = polygon.lines.map(lineToList)
 
-  implicit def multiPointToList(multiPoint: MultiPoint): List[List[Double]] = multiPoint.points.map(pointToList(_))
+  def multiPointToList(multiPoint: MultiPoint): List[List[Double]] = multiPoint.points.map(pointToList)
 
-  implicit def multiLineToList(multiLine: MultiLine): List[List[List[Double]]] = multiLine.lines.map(lineToList(_))
+  def multiLineToList(multiLine: MultiLine): List[List[List[Double]]] = multiLine.lines.map(lineToList)
 
-  implicit def multiPolygonToList(multiPolygon: MultiPolygon): List[List[List[List[Double]]]] = multiPolygon.polygons.map(polygonToList(_))
+  def multiPolygonToList(multiPolygon: MultiPolygon): List[List[List[List[Double]]]] = multiPolygon.polygons.map(polygonToList)
 
-  implicit def featureCollectionToList(featureCollection: FeatureCollection): List[Feature] = featureCollection.features
+  def featureCollectionToList(featureCollection: FeatureCollection): List[Feature] = featureCollection.features
 
   implicit class GeometryToFeature(geometry: Geometry) {
     def toFeature: Feature = Feature(geometry)
@@ -43,6 +43,8 @@ object GeoJson {
 
   implicit val multiPolygonWrites: Writes[MultiPolygon] = writeJson("MultiPolygon", multiPolygonToList)
 
+  implicit val geometryCollectionWrites: Writes[GeometryCollection] = writeJson("GeometryCollection", gc => gc.geometries, "geometries")
+
   implicit val geometryWrites = new Writes[Geometry] {
     def writes(geometry: Geometry) = geometry match {
       case p: Point2D => Json.toJson(p)
@@ -51,6 +53,7 @@ object GeoJson {
       case mp: MultiPoint => Json.toJson(mp)
       case ml: MultiLine => Json.toJson(ml)
       case mpy: MultiPolygon => Json.toJson(mpy)
+      case gc: GeometryCollection => Json.toJson(gc)
     }
   }
 

@@ -6,3 +6,4 @@
 /target/
 .idea/
 /src/test/**/*.sc
+wkt-geometry-parser-1.0/

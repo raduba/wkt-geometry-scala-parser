@@ -12,6 +12,8 @@ case class MultiPoint(points: List[Point2D]) extends Geometry
 case class MultiLine(lines: List[Line]) extends Geometry
 case class MultiPolygon(polygons: List[Polygon]) extends Geometry
 
+case class GeometryCollection(geometries: List[Geometry]) extends Geometry
+
 object WKTParser extends JavaTokenParsers {
   private def number: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 
@@ -41,5 +43,11 @@ object WKTParser extends JavaTokenParsers {
   def multiPolygon: Parser[MultiPolygon] = "MULTIPOLYGON" ~> "(" ~> rep1sep(polyLine, ",") <~ ")" ^^ { MultiPolygon} |
     "MULTIPOLYGON" ~ "EMPTY" ^^ {_ => MultiPolygon(Nil) }
 
-  def geometry: Parser[Geometry] = point | lineString | polygon | multiPoint | multiLineString | multiPolygon
+  def singleGeometry: Parser[Geometry] = point | lineString | polygon | multiPoint | multiLineString | multiPolygon
+
+  def geometryCollection: Parser[GeometryCollection] = "GEOMETRYCOLLECTION" ~> "(" ~> rep1sep(singleGeometry, ",") <~ ")" ^^ {
+    GeometryCollection } | "GEOMETRYCOLLECTION" ~ "EMPTY" ^^ {_ => GeometryCollection(Nil) }
+
+  def geometry: Parser[Geometry] = singleGeometry | geometryCollection
+
 }
