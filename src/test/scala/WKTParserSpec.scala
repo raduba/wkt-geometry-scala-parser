@@ -26,7 +26,7 @@ class WKTParserSpec extends FunSpec with Matchers {
       result.get should equal(Point2D(0, 0))
     }
 
-    it ("should fail on invalid point definition") {
+    it("should fail on invalid point definition") {
       val toParse = List("1 2a", " -2", "a", "a b", "", " ", "a1 -2.123", "-1 0")
       val expected = List(Point2D(-1, 0))
       val result = toParse.flatMap(s => gparse(s"POINT ($s)", WKTParser.point))
@@ -41,8 +41,8 @@ class WKTParserSpec extends FunSpec with Matchers {
       val minValidLineString = gparse("LINESTRING(30 10, 10 30)", WKTParser.lineString)
       val invalidLineString = gparse("LINESTRING (30 10)", WKTParser.lineString)
 
-      validLineString should equal(Some(Line(List(Point2D(30.0,10.0), Point2D(10.0,30.0), Point2D(40.0,40.0)))))
-      minValidLineString should equal(Some(Line(List(Point2D(30.0,10.0), Point2D(10.0,30.0)))))
+      validLineString should equal(Some(Line(List(Point2D(30.0, 10.0), Point2D(10.0, 30.0), Point2D(40.0, 40.0)))))
+      minValidLineString should equal(Some(Line(List(Point2D(30.0, 10.0), Point2D(10.0, 30.0)))))
       invalidLineString should equal(None)
     }
   }
@@ -52,8 +52,8 @@ class WKTParserSpec extends FunSpec with Matchers {
       val poly1 = gparse("POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", WKTParser.polygon)
       val poly2 = gparse("POLYGON((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))", WKTParser.polygon)
 
-      poly1 should equal(Some(Polygon(List(Line(List(Point2D(30.0,10.0), Point2D(40.0,40.0), Point2D(20.0,40.0), Point2D(10.0,20.0), Point2D(30.0,10.0)))))))
-      poly2 should equal(Some(Polygon(List(Line(List(Point2D(35.0,10.0), Point2D(45.0,45.0), Point2D(15.0,40.0), Point2D(10.0,20.0), Point2D(35.0,10.0))), Line(List(Point2D(20.0,30.0), Point2D(35.0,35.0), Point2D(30.0,20.0), Point2D(20.0,30.0)))))))
+      poly1 should equal(Some(Polygon(List(Line(List(Point2D(30.0, 10.0), Point2D(40.0, 40.0), Point2D(20.0, 40.0), Point2D(10.0, 20.0), Point2D(30.0, 10.0)))))))
+      poly2 should equal(Some(Polygon(List(Line(List(Point2D(35.0, 10.0), Point2D(45.0, 45.0), Point2D(15.0, 40.0), Point2D(10.0, 20.0), Point2D(35.0, 10.0))), Line(List(Point2D(20.0, 30.0), Point2D(35.0, 35.0), Point2D(30.0, 20.0), Point2D(20.0, 30.0)))))))
     }
   }
 
@@ -62,15 +62,15 @@ class WKTParserSpec extends FunSpec with Matchers {
       val mp1 = gparse("MULTIPOINT ((10 40), (40 30), (20 20), (30 10))", WKTParser.multiPoint)
       val mp2 = gparse("MULTIPOINT(10 40, 40 30, 20 20, 30 10)", WKTParser.multiPoint)
 
-      mp1 should equal(Some(MultiPoint(List(Point2D(10.0,40.0), Point2D(40.0,30.0), Point2D(20.0,20.0), Point2D(30.0,10.0)))))
-      mp2 should equal(Some(MultiPoint(List(Point2D(10.0,40.0), Point2D(40.0,30.0), Point2D(20.0,20.0), Point2D(30.0,10.0)))))
+      mp1 should equal(Some(MultiPoint(List(Point2D(10.0, 40.0), Point2D(40.0, 30.0), Point2D(20.0, 20.0), Point2D(30.0, 10.0)))))
+      mp2 should equal(Some(MultiPoint(List(Point2D(10.0, 40.0), Point2D(40.0, 30.0), Point2D(20.0, 20.0), Point2D(30.0, 10.0)))))
     }
   }
 
   describe("WKTParser should parse multilinestring definition") {
     it("should parse valid multilinestring definitions") {
       val mls = gparse("MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))", WKTParser.multiLineString)
-      mls should equal(Some(MultiLine(List(Line(List(Point2D(10.0,10.0), Point2D(20.0,20.0), Point2D(10.0,40.0))), Line(List(Point2D(40.0,40.0), Point2D(30.0,30.0), Point2D(40.0,20.0), Point2D(30.0,10.0)))))))
+      mls should equal(Some(MultiLine(List(Line(List(Point2D(10.0, 10.0), Point2D(20.0, 20.0), Point2D(10.0, 40.0))), Line(List(Point2D(40.0, 40.0), Point2D(30.0, 30.0), Point2D(40.0, 20.0), Point2D(30.0, 10.0)))))))
     }
   }
 
@@ -79,8 +79,36 @@ class WKTParserSpec extends FunSpec with Matchers {
       val mpoly1 = gparse("MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))", WKTParser.multiPolygon)
       val mpoly2 = gparse("MULTIPOLYGON(((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))", WKTParser.multiPolygon)
 
-      mpoly1 should equal(Some(MultiPolygon(List(Polygon(List(Line(List(Point2D(30.0,20.0), Point2D(45.0,40.0), Point2D(10.0,40.0), Point2D(30.0,20.0))))), Polygon(List(Line(List(Point2D(15.0,5.0), Point2D(40.0,10.0), Point2D(10.0,20.0), Point2D(5.0,10.0), Point2D(15.0,5.0)))))))))
-      mpoly2 should equal(Some(MultiPolygon(List(Polygon(List(Line(List(Point2D(40.0,40.0), Point2D(20.0,45.0), Point2D(45.0,30.0), Point2D(40.0,40.0))))), Polygon(List(Line(List(Point2D(20.0,35.0), Point2D(10.0,30.0), Point2D(10.0,10.0), Point2D(30.0,5.0), Point2D(45.0,20.0), Point2D(20.0,35.0))), Line(List(Point2D(30.0,20.0), Point2D(20.0,15.0), Point2D(20.0,25.0), Point2D(30.0,20.0)))))))))
+      mpoly1 should equal(Some(MultiPolygon(List(Polygon(List(Line(List(Point2D(30.0, 20.0), Point2D(45.0, 40.0), Point2D(10.0, 40.0), Point2D(30.0, 20.0))))), Polygon(List(Line(List(Point2D(15.0, 5.0), Point2D(40.0, 10.0), Point2D(10.0, 20.0), Point2D(5.0, 10.0), Point2D(15.0, 5.0)))))))))
+      mpoly2 should equal(Some(MultiPolygon(List(Polygon(List(Line(List(Point2D(40.0, 40.0), Point2D(20.0, 45.0), Point2D(45.0, 30.0), Point2D(40.0, 40.0))))), Polygon(List(Line(List(Point2D(20.0, 35.0), Point2D(10.0, 30.0), Point2D(10.0, 10.0), Point2D(30.0, 5.0), Point2D(45.0, 20.0), Point2D(20.0, 35.0))), Line(List(Point2D(30.0, 20.0), Point2D(20.0, 15.0), Point2D(20.0, 25.0), Point2D(30.0, 20.0)))))))))
+    }
+  }
+
+  describe("WKTParser should parse geometry collection definition") {
+    it("should parse valid geometry collection definitions") {
+      val geoCollection = """GEOMETRYCOLLECTION(MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))),
+        MULTIPOLYGON(((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))),
+        MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)),
+        MULTIPOINT ((10 40), (40 30), (20 20), (30 10)),
+        POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10)),
+        POLYGON((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30)),
+        LINESTRING (30 10, 10 30, 40 40))"""
+
+      val parsedGeo = gparse(geoCollection, WKTParser.geometry)
+      parsedGeo.isEmpty should equal(false)
+
+      parsedGeo.get shouldBe a [GeometryCollection]
+      val parsedCollection = parsedGeo.get.asInstanceOf[GeometryCollection]
+
+      parsedCollection.geometries.size should equal(7)
+
+      parsedCollection.geometries.head should equal(MultiPolygon(List(Polygon(List(Line(List(Point2D(30.0, 20.0), Point2D(45.0, 40.0), Point2D(10.0, 40.0), Point2D(30.0, 20.0))))), Polygon(List(Line(List(Point2D(15.0, 5.0), Point2D(40.0, 10.0), Point2D(10.0, 20.0), Point2D(5.0, 10.0), Point2D(15.0, 5.0))))))))
+      parsedCollection.geometries(1) should equal(MultiPolygon(List(Polygon(List(Line(List(Point2D(40.0, 40.0), Point2D(20.0, 45.0), Point2D(45.0, 30.0), Point2D(40.0, 40.0))))), Polygon(List(Line(List(Point2D(20.0, 35.0), Point2D(10.0, 30.0), Point2D(10.0, 10.0), Point2D(30.0, 5.0), Point2D(45.0, 20.0), Point2D(20.0, 35.0))), Line(List(Point2D(30.0, 20.0), Point2D(20.0, 15.0), Point2D(20.0, 25.0), Point2D(30.0, 20.0))))))))
+      parsedCollection.geometries(2) should equal(MultiLine(List(Line(List(Point2D(10.0, 10.0), Point2D(20.0, 20.0), Point2D(10.0, 40.0))), Line(List(Point2D(40.0, 40.0), Point2D(30.0, 30.0), Point2D(40.0, 20.0), Point2D(30.0, 10.0))))))
+      parsedCollection.geometries(3) should equal(MultiPoint(List(Point2D(10.0, 40.0), Point2D(40.0, 30.0), Point2D(20.0, 20.0), Point2D(30.0, 10.0))))
+      parsedCollection.geometries(4) should equal(Polygon(List(Line(List(Point2D(30.0, 10.0), Point2D(40.0, 40.0), Point2D(20.0, 40.0), Point2D(10.0, 20.0), Point2D(30.0, 10.0))))))
+      parsedCollection.geometries(5) should equal(Polygon(List(Line(List(Point2D(35.0, 10.0), Point2D(45.0, 45.0), Point2D(15.0, 40.0), Point2D(10.0, 20.0), Point2D(35.0, 10.0))), Line(List(Point2D(20.0, 30.0), Point2D(35.0, 35.0), Point2D(30.0, 20.0), Point2D(20.0, 30.0))))))
+      parsedCollection.geometries(6) should equal(Line(List(Point2D(30.0, 10.0), Point2D(10.0, 30.0), Point2D(40.0, 40.0))))
     }
   }
 

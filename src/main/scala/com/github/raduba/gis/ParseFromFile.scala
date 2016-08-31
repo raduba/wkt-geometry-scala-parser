@@ -1,5 +1,7 @@
 package com.github.raduba.gis
 
+import com.github.raduba.gis.GeoJson.GeometryToFeature
+
 import scala.io.BufferedSource
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
@@ -13,8 +15,8 @@ object ParseFromFile {
       println(s"Parsing file $fileName")
       val parseResult = parse(fileName)
       parseResult match {
-        case Success(p) => println(s"Successfully parsed $p of type ${p.getClass.getName}")
-        case Failure(e) => println(s"Error on parsing geometry: ${e.getMessage}")
+        case Success(geometry) => println(geometry.toFeature.toJson)
+        case Failure(e) => System.err.println(s"Error on parsing geometry: ${e.getMessage}")
       }
     }
   }
